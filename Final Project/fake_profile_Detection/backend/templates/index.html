@@ -1,0 +1,215 @@
+[file name]: index.html
+[file content begin]
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Fake Profile Detect{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="home">
+    <div class="scan-line"></div>
+    <div class="container">
+        <h1>Detect Fake Social Media Profiles and Reporting in real time </h1>
+        <p>Our advanced system to analyze social media profiles in real-time, protecting you from scams and fake identities with live data.</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'detect_profile' %}" class="btn btn-primary">
+                <i class="fas fa-bolt"></i> Scan a Profile Now
+            </a>
+        {% else %}
+            <a href="{% url 'signup' %}" class="btn btn-primary">
+                <i class="fas fa-rocket"></i> Get Started Free
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Detection Form -->
+<section class="container" id="detect">
+    <div class="detection-form">
+        <h2 class="form-title">Real-time Profile Detection</h2>
+        <p style="text-align: center; margin-bottom: 30px; color: var(--cyber-blue);">
+            <i class="fas fa-bolt"></i> 
+        </p>
+        
+       <div class="platform-icons">
+            <div class="platform-icon active" data-platform="instagram">
+                <i class="fab fa-instagram"></i>
+            </div>
+            <div class="platform-icon" data-platform="facebook">
+                <i class="fab fa-facebook-f"></i>
+            </div>
+            <div class="platform-icon" data-platform="twitter">
+                <i class="fab fa-twitter"></i>
+            </div>
+        </div>
+        
+        {% if user.is_authenticated %}
+            <form id="profile-check-form" method="POST" action="{% url 'detect_profile' %}">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="profile-url">
+                        <i class="fas fa-link"></i> Profile URL
+                        <span style="float: right; font-size: 0.8rem; color: var(--cyber-blue);">Real-time Profile Detection </span>
+                    </label>
+                    <input type="url" id="profile-url" name="profile_url" placeholder="https://www.instagram.com/username" required>
+                    <small style="color: #666; margin-top: 5px;">
+                        We fetch real-time data from ScrapingDog API for accurate analysis
+                    </small>
+                </div>
+                
+                <div class="input-group">
+                    <label for="additional-context">
+                        <i class="fas fa-comment"></i> Additional Context (Optional)
+                    </label>
+                    <input type="text" id="additional-context" name="additional_context" placeholder="Why are you suspicious of this profile?">
+                </div>
+                
+                <input type="hidden" id="platform" name="platform" value="instagram">
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-bolt"></i> Analyze Profile with Real-time API
+                </button>
+            </form>
+        {% else %}
+            <div style="text-align: center; padding: 40px 0;">
+                <h3 style="color: var(--cyber-blue); margin-bottom: 20px;">
+                    <i class="fas fa-user-plus"></i> Sign Up to Start Detecting Fake Profiles
+                </h3>
+                <p style="margin-bottom: 30px;">Create an account to access our real-time profile detection system powered by ScrapingDog API</p>
+                <a href="{% url 'signup' %}" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i> Create Free Account
+                </a>
+                <p style="margin-top: 20px; opacity: 0.8;">
+                    Already have an account? <a href="{% url 'login' %}" style="color: var(--cyber-blue);">Log In</a>
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about" id="about">
+    <div class="container">
+        <h2 class="section-title">About This Project</h2>
+        
+        <div class="contact-info">
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Developer</h3>
+                    <p>Saif</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Contact Number</h3>
+                    <p>8123769345</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Email ID</h3>
+                    <p>hsaifullasaif@gmail.com</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 50px; text-align: center;">
+            <h3 style="color: var(--cyber-blue); margin-bottom: 20px;">
+                <i class="fas fa-cogs"></i> How It Works
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;">
+                <div style="background: var(--card-bg); padding: 20px; border-radius: var(--border-radius); border: 1px solid rgba(0, 243, 255, 0.2);">
+                    <i class="fas fa-link" style="font-size: 2rem; color: var(--cyber-blue); margin-bottom: 15px;"></i>
+                    <h4>1. Enter Profile URL</h4>
+                    <p>Paste the social media profile URL you want to analyze</p>
+                </div>
+                <div style="background: var(--card-bg); padding: 20px; border-radius: var(--border-radius); border: 1px solid rgba(0, 243, 255, 0.2);">
+                    <i class="fas fa-bolt" style="font-size: 2rem; color: var(--cyber-blue); margin-bottom: 15px;"></i>
+                    <h4>2. Real-time API Analysis with Rule Based Engine</h4>
+                    <p>API fetches live profile data for accurate detection</p>
+                </div>
+                <div style="background: var(--card-bg); padding: 20px; border-radius: var(--border-radius); border: 1px solid rgba(0, 243, 255, 0.2);">
+                    <i class="fas fa-chart-bar" style="font-size: 2rem; color: var(--cyber-blue); margin-bottom: 15px;"></i>
+                    <h4>3. Get Real Results</h4>
+                    <p>Receive detailed analysis with risk score based on real data</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Information -->
+        <div style="margin-top: 50px; background: var(--card-bg); padding: 30px; border-radius: var(--border-radius); text-align: center;">
+            <h3 style="color: var(--cyber-blue); margin-bottom: 20px;">
+                <i class="fas fa-database"></i> Real-Time Profile Analysis Powered by Saif
+            </h3>
+            <p style="margin-bottom: 20px;">We use real-time data from API to ensure accurate and up-to-date profile analysis</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div>
+                    <i class="fas fa-clock" style="color: var(--cyber-blue);"></i>
+                    <h4>Real-time Data</h4>
+                    <p>Live profile information</p>
+                </div>
+                <div>
+                    <i class="fas fa-shield-alt" style="color: var(--cyber-blue);"></i>
+                    <h4>Accurate Detection</h4>
+                    <p>Based on actual profile data</p>
+                </div>
+                <div>
+                    <i class="fas fa-tachometer-alt" style="color: var(--cyber-blue);"></i>
+                    <h4>Fast Analysis</h4>
+                    <p>Quick profile scanning</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/main.js' %}"></script>
+<script>
+// Platform selection for home page
+document.querySelectorAll('.platform-icon').forEach(icon => {
+    icon.addEventListener('click', function() {
+        // Remove active class from all icons
+        document.querySelectorAll('.platform-icon').forEach(i => i.classList.remove('active'));
+        
+        // Add active class to clicked icon
+        this.classList.add('active');
+        
+        // Update platform hidden field
+        const platform = this.getAttribute('data-platform');
+        document.getElementById('platform').value = platform;
+        
+        // Update placeholder based on platform
+        const urlInput = document.getElementById('profile-url');
+        switch(platform) {
+            case 'instagram':
+                urlInput.placeholder = 'https://www.instagram.com/username';
+                break;
+            case 'facebook':
+                urlInput.placeholder = 'https://www.facebook.com/username';
+                break;
+            case 'twitter':
+                urlInput.placeholder = 'https://twitter.com/username';
+                break;
+            case 'tiktok':
+                urlInput.placeholder = 'https://www.tiktok.com/@username';
+                break;
+        }
+    });
+});
+</script>
+{% endblock %}
+[file content end]

@@ -1,0 +1,292 @@
+:root {
+    --cyber-blue: #00f3ff;
+    --cyber-purple: #8a2be2;
+    --cyber-red: #ff073a;
+    --cyber-green: #39ff14;
+    --dark-bg: #0a0a1a;
+    --darker-bg: #050510;
+    --card-bg: rgba(15, 15, 35, 0.8);
+    --text-color: #e0e0ff;
+    --border-radius: 8px;
+    --glow: 0 0 10px currentColor;
+}
+/* Add error styling */
+.error-text {
+    color: var(--cyber-red);
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.alert-danger {
+    background: rgba(255, 7, 58, 0.1);
+    border: 1px solid var(--cyber-red);
+    color: var(--cyber-red);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.auth-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+    animation: fade-in 0.5s ease-out;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-header .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--cyber-blue);
+    text-shadow: var(--glow);
+}
+
+.auth-header .logo i {
+    animation: glow-pulse 2s infinite;
+}
+
+.auth-header h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: var(--cyber-blue);
+    background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.auth-header p {
+    opacity: 0.8;
+    color: var(--text-color);
+}
+
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--cyber-blue);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    background: rgba(0, 0, 20, 0.5);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--cyber-blue);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 38px;
+    cursor: pointer;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+    color: var(--cyber-blue);
+}
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.forgot-link {
+    color: var(--cyber-blue);
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.terms-agree {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.terms-agree a {
+    color: var(--cyber-blue);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    margin-top: 10px;
+    background: var(--cyber-purple);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 0 10px var(--cyber-purple);
+}
+
+.auth-btn:hover {
+    background: #6a1fc1;
+    box-shadow: 0 0 15px var(--cyber-purple);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+.auth-footer a {
+    color: var(--cyber-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Checkbox styling */
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    user-select: none;
+    color: var(--text-color);
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: rgba(0, 0, 20, 0.5);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: 4px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: rgba(0, 243, 255, 0.1);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: var(--cyber-purple);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Form styles */
+.form-control {
+    background: rgba(0, 0, 20, 0.5) !important;
+    border: 1px solid rgba(0, 243, 255, 0.3) !important;
+    color: var(--text-color) !important;
+}
+
+.form-control:focus {
+    border-color: var(--cyber-blue) !important;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.5) !important;
+}
+
+/* Animations */
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-card {
+        padding: 30px 20px;
+    }
+    
+    .auth-header .logo {
+        font-size: 1.5rem;
+    }
+    
+    .auth-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .remember-forgot {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}

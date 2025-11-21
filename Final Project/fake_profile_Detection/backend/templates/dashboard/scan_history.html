@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Scan History - Fake Profile Detect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Overview</a></li>
+            <li class="active"><a href="{% url 'scan_history' %}"><i class="fas fa-search"></i> Scan History</a></li>
+            <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            <li><a href="#"><i class="fas fa-flag"></i> Reports</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="dashboard-header">
+            <h1>Scan History</h1>
+            <a href="{% url 'detect_profile' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Scan
+            </a>
+        </div>
+
+        <div class="recent-scans">
+            <div class="scans-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Profile URL</th>
+                            <th>Platform</th>
+                            <th>Date</th>
+                            <th>Result</th>
+                            <th>Risk Score</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scan in scans %}
+                        <tr>
+                            <td title="{{ scan.profile_url }}">{{ scan.profile_url|truncatechars:30 }}</td>
+                            <td><i class="fab fa-{{ scan.platform }}"></i> {{ scan.get_platform_display }}</td>
+                            <td>{{ scan.created_at|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <span class="badge badge-{{ scan.result }}">
+                                    {{ scan.get_result_display }}
+                                </span>
+                            </td>
+                            <td>{{ scan.risk_score }}%</td>
+                            <td>
+                                <button class="icon-btn" title="View Details"><i class="fas fa-eye"></i></button>
+                                <button class="icon-btn" title="Download Report"><i class="fas fa-download"></i></button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align: center;">No scan history yet. <a href="{% url 'detect_profile' %}">Start scanning profiles</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

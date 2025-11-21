@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - Fake Profile Detect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>Fake Profile Detect</span>
+            </div>
+            <h2>Login to Your Account</h2>
+            <p>Welcome back! Please enter your details</p>
+        </div>
+        
+        <form method="post" id="login-form">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                Invalid username or password.
+            </div>
+            {% endif %}
+            
+            <div class="input-group">
+                <label for="id_username">Username</label>
+                <input type="text" id="id_username" name="username" placeholder="Enter your username" required 
+                       value="{{ form.username.value|default:'' }}">
+            </div>
+            
+            <div class="input-group">
+                <label for="id_password">Password</label>
+                <input type="password" id="id_password" name="password" placeholder="Enter your password" required>
+                <span class="toggle-password" id="togglePassword">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
+            
+            <div class="remember-forgot">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="remember-me">
+                    <span class="checkmark"></span>
+                    Remember me
+                </label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="btn btn-primary auth-btn">Sign In</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/auth.js' %}"></script>
+{% endblock %}

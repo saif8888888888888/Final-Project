@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Fake Profile Detect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="active"><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Overview</a></li>
+            <li><a href="{% url 'scan_history' %}"><i class="fas fa-search"></i> Scan History</a></li>
+            <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+            <li><a href="#"><i class="fas fa-flag"></i> Reports</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="dashboard-header">
+            <h1>Dashboard Overview</h1>
+            <a href="{% url 'detect_profile' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Scan
+            </a>
+        </div>
+
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_scans }}</h3>
+                    <p>Total Scans</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-times"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ fake_profiles }}</h3>
+                    <p>Fake Profiles</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ genuine_profiles }}</h3>
+                    <p>Genuine Profiles</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-flag"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ reports_filed }}</h3>
+                    <p>Reports Filed</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-row">
+            <div class="chart-container">
+                <h3>Profile Analysis Results</h3>
+                <canvas id="resultsChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Platform Distribution</h3>
+                <canvas id="platformsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="recent-scans">
+            <h3>Recent Scans</h3>
+            <div class="scans-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Profile URL</th>
+                            <th>Platform</th>
+                            <th>Date</th>
+                            <th>Result</th>
+                            <th>Risk Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scan in recent_scans %}
+                        <tr>
+                            <td title="{{ scan.profile_url }}">{{ scan.profile_url|truncatechars:30 }}</td>
+                            <td><i class="fab fa-{{ scan.platform }}"></i> {{ scan.get_platform_display }}</td>
+                            <td>{{ scan.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="badge badge-{{ scan.result }}">
+                                    {{ scan.get_result_display }}
+                                </span>
+                            </td>
+                            <td>{{ scan.risk_score }}%</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center;">No scans yet. <a href="{% url 'detect_profile' %}">Start scanning profiles</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+    // Initialize charts with Django data
+    document.addEventListener('DOMContentLoaded', function() {
+        // Results chart data
+        const resultData = {
+            labels: ['Fake', 'Genuine', 'Suspicious'],
+            datasets: [{
+                data: [
+                    {{ fake_profiles }},
+                    {{ genuine_profiles }},
+                    {{ suspicious_profiles }}
+                ],
+                backgroundColor: [
+                    'rgba(255, 7, 58, 0.8)',
+                    'rgba(57, 255, 20, 0.8)',
+                    'rgba(255, 165, 0, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(255, 7, 58, 1)',
+                    'rgba(57, 255, 20, 1)',
+                    'rgba(255, 165, 0, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Platform distribution data (sample - you would get this from your data)
+        const platformData = {
+            labels: ['Instagram', 'Facebook', 'Twitter'],
+            datasets: [{
+                data: [12, 8, 7, 2],
+                backgroundColor: [
+                    'rgba(225, 48, 108, 0.8)',
+                    'rgba(59, 89, 152, 0.8)',
+                    'rgba(29, 161, 242, 0.8)',
+                    'rgba(0, 0, 0, 0.8)'
+                ]
+            }]
+        };
+
+        initCharts(resultData, platformData);
+    });
+</script>
+{% endblock %}

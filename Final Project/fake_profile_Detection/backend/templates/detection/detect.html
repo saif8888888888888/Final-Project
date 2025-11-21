@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detect Profile - Fake Profile Detect{% endblock %}
+
+{% block content %}
+<section class="container" style="margin-top: 100px;">
+    <div class="detection-form">
+        <h2 class="form-title">Profile Detection</h2>
+        <p style="text-align: center; margin-bottom: 30px;">Enter the profile URL to analyze it for fake indicators</p>
+        
+        <div class="platform-icons">
+            <div class="platform-icon active" data-platform="instagram">
+                <i class="fab fa-instagram"></i>
+            </div>
+            <div class="platform-icon" data-platform="facebook">
+                <i class="fab fa-facebook-f"></i>
+            </div>
+            <div class="platform-icon" data-platform="twitter">
+                <i class="fab fa-twitter"></i>
+            </div>
+        </div>
+        
+        <form id="profile-check-form" method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <label for="profile-url">Profile URL</label>
+                <input type="url" id="profile-url" name="profile_url" placeholder="https://www.instagram.com/username" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="additional-context">Additional Context (Optional)</label>
+                <textarea id="additional-context" name="additional_context" placeholder="Why are you suspicious of this profile? (e.g., suspicious messages, unusual behavior)" rows="3"></textarea>
+            </div>
+            
+            <input type="hidden" id="platform" name="platform" value="instagram">
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-search"></i> Analyze Profile
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %}

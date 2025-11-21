@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analysis Results - Fake Profile Detect{% endblock %}
+
+{% block content %}
+<section class="container" style="margin-top: 100px;">
+    <div class="detection-form">
+        
+        <!-- Result Banner -->
+        <div class="result-banner {% if analysis_result.result == 'fake' %}fake-banner{% elif analysis_result.result == 'suspicious' %}suspicious-banner{% else %}genuine-banner{% endif %}">
+            {% if analysis_result.result == 'fake' %}
+            <div style="text-align: center; padding: 30px;">
+                <i class="fas fa-times-circle" style="font-size: 4rem; color: #ff073a; margin-bottom: 20px;"></i>
+                <h1 style="color: #ff073a; margin-bottom: 10px;">🚫 FAKE PROFILE</h1>
+                <p style="color: #fff; font-size: 1.2rem;">Risk Score: {{ analysis_result.risk_score }}%</p>
+            </div>
+            {% elif analysis_result.result == 'suspicious' %}
+            <div style="text-align: center; padding: 30px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #ffa500; margin-bottom: 20px;"></i>
+                <h1 style="color: #ffa500; margin-bottom: 10px;">⚠️ SUSPICIOUS PROFILE</h1>
+                <p style="color: #fff; font-size: 1.2rem;">Risk Score: {{ analysis_result.risk_score }}%</p>
+            </div>
+            {% else %}
+            <div style="text-align: center; padding: 30px;">
+                <i class="fas fa-check-circle" style="font-size: 4rem; color: #39ff14; margin-bottom: 20px;"></i>
+                <h1 style="color: #39ff14; margin-bottom: 10px;">✅ GENUINE PROFILE</h1>
+                <p style="color: #fff; font-size: 1.2rem;">Risk Score: {{ analysis_result.risk_score }}%</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="result-card">            
+            <!-- Real-time API Data Section -->
+            <div class="api-data-section">
+                <h4 style="color: #00f3ff; margin-bottom: 15px; display: flex; align-items: center;">
+                    <i class="fas fa-bolt" style="margin-right: 10px;"></i>
+                    Real-time Profile Data
+                </h4>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                    <div class="data-item">
+                        <strong>👤 Username:</strong> {{ profile_data.username }}
+                    </div>
+                    <div class="data-item">
+                        <strong>👥 Followers:</strong> {{ profile_data.followers_count }}
+                    </div>
+                    <div class="data-item">
+                        <strong>🔄 Following:</strong> {{ profile_data.following_count }}
+                    </div>
+                    <div class="data-item">
+                        <strong>✅ Verified:</strong> {% if profile_data.is_verified %}Yes{% else %}No{% endif %}
+                    </div>
+                    <div class="data-item">
+                        <strong>🔒 Private:</strong> {% if profile_data.is_private %}Yes{% else %}No{% endif %}
+                    </div>
+                </div>
+                
+                {% if profile_data.bio and profile_data.bio != 'No bio available' %}
+                <div class="data-item" style="grid-column: 1 / -1;">
+                    <strong>📝 Bio:</strong> {{ profile_data.bio|truncatechars:150 }}
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Risk Factors Section -->
+            {% if scan.risk_factors %}
+            <div class="risk-factors">
+                <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <i class="fas fa-shield-alt" style="font-size: 2rem; color: {% if analysis_result.result == 'fake' %}#ff073a{% elif analysis_result.result == 'suspicious' %}#ffa500{% else %}#39ff14{% endif %}; margin-right: 15px;"></i>
+                    <h4 style="color: {% if analysis_result.result == 'fake' %}#ff073a{% elif analysis_result.result == 'suspicious' %}#ffa500{% else %}#39ff14{% endif %}; margin: 0; font-size: 1.5rem;">
+                        {% if analysis_result.result == 'fake' %}
+                        🚨 Why This Profile Is Fake
+                        {% elif analysis_result.result == 'suspicious' %}
+                        ⚠️ Suspicious Indicators
+                        {% else %}
+                        ✅ Profile Analysis
+                        {% endif %}
+                    </h4>
+                </div>
+                
+                <div style="display: grid; gap: 12px;">
+                    {% for factor in scan.risk_factors %}
+                    <div class="risk-factor" style="border-left-color: {% if analysis_result.result == 'fake' %}#ff073a{% elif analysis_result.result == 'suspicious' %}#ffa500{% else %}#39ff14{% endif %};">
+                        <i class="fas fa-{% if analysis_result.result == 'fake' %}exclamation-triangle{% elif analysis_result.result == 'suspicious' %}question-circle{% else %}info-circle{% endif %}" 
+                           style="color: {% if analysis_result.result == 'fake' %}#ff073a{% elif analysis_result.result == 'suspicious' %}#ffa500{% else %}#39ff14{% endif %}; margin-right: 12px; margin-top: 2px;"></i>
+                        <div>
+                            <span style="color: #fff; line-height: 1.4;">{{ factor }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="no-risk-factors">
+                <i class="fas fa-check-circle" style="font-size: 3rem; color: #39ff14; margin-bottom: 15px;"></i>
+                <h4 style="color: #39ff14; margin-bottom: 10px;">✅ No Issues Found</h4>
+                <p style="color: #fff; margin: 0;">This profile shows no suspicious indicators based on our analysis.</p>
+            </div>
+            {% endif %}
+            
+            <div style="margin-top: 30px; display: flex; gap: 15px; flex-wrap: wrap;">
+                <a href="{% url 'detect_profile' %}" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Analyze Another Profile
+                </a>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline">
+                    <i class="fas fa-chart-bar"></i> View Dashboard
+                </a>
+                {% if analysis_result.result == 'fake' or analysis_result.result == 'suspicious' %}
+                <button class="btn btn-danger report-button" onclick="reportProfile('{{ scan.profile_url }}', '{{ scan.platform }}')">
+                    <i class="fas fa-flag"></i> Report Profile
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; background: #1a1a2e; padding: 20px; border-radius: 10px;">
+            <h4 style="color: #00f3ff; margin-bottom: 15px;">🔍 Scan Details</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div>
+                    <strong>🔗 Profile URL:</strong><br>
+                    <span style="word-break: break-all;">{{ scan.profile_url }}</span>
+                </div>
+                <div>
+                    <strong>📱 Platform:</strong><br>
+                    <i class="fab fa-{{ scan.platform }}"></i> {{ scan.get_platform_display }}
+                </div>
+                <div>
+                    <strong>📅 Scan Date:</strong><br>
+                    {{ scan.created_at|date:"M d, Y H:i" }}
+                </div>
+                <div>
+                    <strong>🆔 Scan ID:</strong><br>
+                    #{{ scan.id }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function reportProfile(profileUrl, platform) {
+    const reason = prompt("Please provide additional details about this profile:");
+    if (reason) {
+        fetch("{% url 'report_profile' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                profile_url: profileUrl,
+                platform: platform,
+                reason: reason
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('✅ Profile reported successfully!');
+            } else {
+                alert('❌ Failed to report profile. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('❌ Failed to report profile. Please try again.');
+        });
+    }
+}
+</script>
+
+<style>
+.result-banner {
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.fake-banner {
+    background: linear-gradient(135deg, rgba(255, 7, 58, 0.2), rgba(255, 7, 58, 0.1));
+    border: 3px solid #ff073a;
+}
+
+.suspicious-banner {
+    background: linear-gradient(135deg, rgba(255, 165, 0, 0.2), rgba(255, 165, 0, 0.1));
+    border: 3px solid #ffa500;
+}
+
+.genuine-banner {
+    background: linear-gradient(135deg, rgba(57, 255, 20, 0.2), rgba(57, 255, 20, 0.1));
+    border: 3px solid #39ff14;
+}
+
+.risk-factors {
+    margin: 30px 0;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.no-risk-factors {
+    margin: 30px 0;
+    padding: 25px;
+    background: rgba(57, 255, 20, 0.08);
+    border-radius: 15px;
+    border: 2px solid rgba(57, 255, 20, 0.3);
+    text-align: center;
+}
+
+.risk-factor {
+    display: flex;
+    align-items: flex-start;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+}
+
+.risk-factor:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
+}
+
+.data-item {
+    padding: 10px;
+    background: rgba(0, 243, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 243, 255, 0.2);
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #00f3ff;
+    color: #0d0d1a;
+    border-color: #00f3ff;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #00f3ff;
+    border-color: #00f3ff;
+}
+
+.btn-danger {
+    background: #ff073a;
+    color: white;
+    border-color: #ff073a;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 5px 15px rgba(255, 7, 58, 0.3);
+}
+
+.detection-form {
+    background: #1a1a2e;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    margin-bottom: 30px;
+}
+
+.result-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
